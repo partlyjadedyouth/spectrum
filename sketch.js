@@ -1,10 +1,11 @@
 /*
- * Sketch.js
+ * sketch.js
  */
 
-const introLogoTime = 2000; // An amount of time to display logo
-const introMessageTime = 2000; // An amount of time to display intro message
-let isStartButtonPressed = false; // Indicates if the start button is pressed or not
+const introLogoTime = 1000; // amount of time to display logo
+const introMessageTime = 1000; // amount of time to display intro message
+let isStartButtonPressed = false; // indicates if the start button is pressed or not
+let video; // captured video
 
 function preload() {
   logoImg = loadImage("assets/logo_negative.png");
@@ -12,6 +13,10 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
+  // capture video from camera
+  video = createCapture(VIDEO);
+  video.hide();
 }
 
 function draw() {
@@ -35,8 +40,7 @@ function draw() {
       isStartButtonPressed = true;
     }
   } else {
-    // button is pressed -> start game
-    fill(255);
-    text("GAME IS STARTED", width / 2, height / 2);
+    // button is pressed -> start main
+    showVideo(video);
   }
 }
