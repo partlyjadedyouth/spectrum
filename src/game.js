@@ -22,37 +22,47 @@ function showVideo(video) {
   pop();
 }
 
-/* playMusicButton: displays a button to start a music */
+/* playMusicButton: displays a button to start music */
 function playMusicButton() {
   const message = "Press this button\nto play music"; // button message
+  const x = width / 2,
+    y = height / 2,
+    w = 0.3 * width,
+    h = 0.1 * height;
 
   // button
   rectMode(CENTER);
   fill(150);
-  rect(width / 2, height / 2, 0.3 * width, 0.1 * height);
+  rect(x, y, w, h);
 
   // button text
   textAlign(CENTER, CENTER);
   textSize(32);
   fill(25);
-  text(message, width / 2, height / 2, 0.3 * width, 0.1 * height);
+  text(message, x, y, w, h);
 }
 
+/* stopMusicButton: displays a button to stop music */
 function stopMusicButton() {
   const message = "Press this button\nto stop music"; // button message
+  const x = 0.8 * width,
+    y = 0.8 * height,
+    w = 0.3 * width,
+    h = 0.1 * height;
 
   // button
   rectMode(CENTER);
   fill(150);
-  rect(0.8 * width, 0.8 * height, 0.3 * width, 0.1 * height);
+  rect(x, y, w, h);
 
   // button text
   textAlign(CENTER, CENTER);
   textSize(32);
   fill(25);
-  text(message, 0.8 * width, 0.8 * height, 0.3 * width, 0.1 * height);
+  text(message, x, y, w, h);
 }
 
+/* endingCredit: displays ending credit */
 function endingCredit() {
   const message = "끝"; // message to display
 

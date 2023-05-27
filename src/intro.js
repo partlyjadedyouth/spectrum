@@ -22,8 +22,8 @@ function introMessage() {
   text(message, width / 2, height / 2, 0.8 * width, 0.5 * height);
 }
 
-/* introStartButton: displays a button used to start the game */
-function introStartButton() {
+/* startButton: displays a button used to start the game */
+function startButton() {
   const message = "Press this button\nto start"; // button message
 
   // button
