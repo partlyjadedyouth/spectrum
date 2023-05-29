@@ -4,21 +4,29 @@
  */
 
 /* showVideo: displays a video captured by camera */
-function showVideo(video) {
+function showVideo(video, predictions) {
   imageMode(CENTER);
+  ellipseMode(CENTER);
   push(); // mirror mode
   translate(width, 0);
   scale(-1, 1);
 
   // display captured video
-  // width: full screen, height: proportionally resized
-  image(
-    video,
-    width / 2,
-    height / 2,
-    width,
-    (video.height * width) / video.width,
-  );
+  image(video, width / 2, height / 2, width, height);
+
+  // draw facemesh
+  for (let i = 0; i < predictions.length; i++) {
+    const keypoints = predictions[i].scaledMesh;
+    for (let j = 0; j < keypoints.length; j++) {
+      const [x, y] = [
+        (keypoints[j][0] / 640) * width,
+        (keypoints[j][1] / 480) * height,
+      ];
+      fill(0, 0, 255);
+      ellipse(x, y, 8);
+    }
+  }
+
   pop();
 }
 
