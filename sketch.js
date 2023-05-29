@@ -4,8 +4,7 @@
 
 /* Constants and Global Variables */
 let ms; // millisecond timer
-let gameStartedAt; // time when the start button is pressed
-const playMusicTime = 100; // music will be played after this amount of time
+let bgmStartedAt; // time when the start button is pressed
 const introRunningTime = 3000; // running time of intro video
 
 let intro; // intro video
@@ -13,9 +12,6 @@ let video; // captured video
 let facemesh; // facemesh
 let predictions = []; // facemesh predictions
 let bgm; // background music (narration)
-let mic; // microphone input
-let recorder; // sound recorder
-let soundFile; // sound file to save recorded voice
 
 let isStartButtonPressed = false; // indicates if the start button is pressed or not
 let isPlayButtonPressed = false; // indicates if the play button is pressed or not
@@ -43,76 +39,49 @@ function setup() {
     predictions = results;
   });
   video.hide();
-
-  // declare mic related variables
-  mic = new p5.AudioIn();
-  mic.start();
-  recorder = new p5.SoundRecorder();
-  recorder.setInput(mic);
-  soundFile = new p5.SoundFile();
 }
 
 /* draw */
 function draw() {
-  background(0);
   ms = millis(); // timer
 
-  if (!isStartButtonPressed) {
-    // start button
-    // start button click event will be handled by mousePressed()
-    startButton();
+  if (ms < introRunningTime) {
+    // 1. Play intro vid
+    introVideo(intro);
+  } else if (!isStartButtonPressed) {
+    // 2. If intro vid is finished, pause the video
+    console.log("Intro vid finished");
+    intro.pause();
   } else {
-    if (ms < introRunningTime) {
-      // show intro
-      introVideo(intro);
+    background(0);
+    // 3. Show webcam, facemesh, and play button
+    showVideo(video, predictions);
+    if (!isPlayButtonPressed) {
+      playMusicButton();
     } else {
-      // finish intro
-      intro.pause();
+      if (!isStopButtonPressed && bgm.isPlaying()) {
+        // 4. If music is started, show stop button
+        stopMusicButton();
 
-      // intro finished -> game start
-      showVideo(video, predictions);
+        // 5. Show subtitles
+        subtitle(bgmStartedAt, ms);
+        timer(bgmStartedAt, ms);
 
-      if (
-        ms - gameStartedAt > introRunningTime + playMusicTime &&
-        !isPlayButtonPressed
-      ) {
-        // show play music button
-        playMusicButton();
-      } else if (isPlayButtonPressed) {
-        if (!isStopButtonPressed) {
-          // when play button is pressed
-          stopMusicButton();
-
-          // start recording
-          recorder.record(soundFile);
-          console.log(soundFile);
-          console.log(mic.getLevel());
-
-          if (
-            isButtonClicked(
-              0.8 * width,
-              0.8 * height,
-              0.3 * width,
-              0.1 * height,
-            )
-          ) {
-            // when stop button is pressed
-            // toggle isStopButtonPressed
-            isStopButtonPressed = true;
-          }
-        } else {
-          // and stop bgm, mic and recorder
-          bgm.stop();
-          mic.stop();
-          recorder.stop();
-          if (soundFile) {
-            console.log("HAHA");
-            // when bgm is finished, show ending credit
-            endingCredit();
-            soundFile.play();
-            save(soundFile, "mysound.wav");
-          }
+        if (
+          isButtonClicked(0.2 * width, 0.2 * height, 0.3 * width, 0.1 * height)
+        ) {
+          // 5. When stop button is pressed
+          // toggle isStopButtonPressed
+          isStopButtonPressed = true;
         }
+      } else if (isStopButtonPressed) {
+        // 6. Stop button is pressed -> stop music
+        bgm.stop();
+      }
+
+      if (!bgm.isPlaying()) {
+        // 7. Show ending credit
+        endingCredit();
       }
     }
   }
@@ -139,26 +108,17 @@ function isButtonClicked(x, y, w, h) {
 
 /* mousePressed: handles mouse press events on startButton and playMusicButton */
 function mousePressed() {
-  if (
-    !isStartButtonPressed &&
-    isButtonClicked(width / 2, height / 2, 0.3 * width, 0.1 * height)
-  ) {
+  if (!isStartButtonPressed && ms > introRunningTime) {
     // when start button is pressed
-    console.log("Start MIC");
     bgm.play();
     bgm.stop(); // stop right after play
     isStartButtonPressed = true;
-    gameStartedAt = ms;
-  } else {
-    if (
-      ms - gameStartedAt > introRunningTime + playMusicTime &&
-      !isPlayButtonPressed
-    ) {
-      if (isButtonClicked(width / 2, height / 2, 0.3 * width, 0.1 * height)) {
-        // when play button is pressed
-        bgm.play(); // play music
-        isPlayButtonPressed = true;
-      }
+  } else if (!isPlayButtonPressed) {
+    if (isButtonClicked(0.8 * width, 0.2 * height, 0.3 * width, 0.1 * height)) {
+      // when play button is pressed
+      bgm.play(); // play music
+      isPlayButtonPressed = true;
+      bgmStartedAt = ms;
     }
   }
 }

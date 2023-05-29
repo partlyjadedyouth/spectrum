@@ -10,21 +10,21 @@ function introVideo(intro) {
   image(intro, width / 2, height / 2, width, height);
 }
 
-/* startButton: displays a button used to start the game */
-function startButton() {
-  const message = "Press this button\nto start"; // button message
+// /* startButton: displays a button used to start the game */
+// function startButton() {
+//   const message = "Press this button\nto start"; // button message
 
-  // button
-  rectMode(CENTER);
-  fill(150);
-  rect(width / 2, height / 2, 0.3 * width, 0.1 * height);
+//   // button
+//   rectMode(CENTER);
+//   fill(150);
+//   rect(width / 2, height / 2, 0.3 * width, 0.1 * height);
 
-  // button text
-  textAlign(CENTER, CENTER);
-  textSize(32);
-  fill(25);
-  text(message, width / 2, height / 2, 0.3 * width, 0.1 * height);
-}
+//   // button text
+//   textAlign(CENTER, CENTER);
+//   textSize(32);
+//   fill(25);
+//   text(message, width / 2, height / 2, 0.3 * width, 0.1 * height);
+// }
 
 // /* introLogo: displays a logo on intro */
 // function introLogo(logoImg) {

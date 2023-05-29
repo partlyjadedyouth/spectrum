@@ -32,9 +32,9 @@ function showVideo(video, predictions) {
 
 /* playMusicButton: displays a button to start music */
 function playMusicButton() {
-  const message = "Press this button\nto play music"; // button message
-  const x = width / 2,
-    y = height / 2,
+  const message = "재생"; // button message
+  const x = 0.8 * width,
+    y = 0.2 * height,
     w = 0.3 * width,
     h = 0.1 * height;
 
@@ -52,9 +52,9 @@ function playMusicButton() {
 
 /* stopMusicButton: displays a button to stop music */
 function stopMusicButton() {
-  const message = "Press this button\nto stop music"; // button message
-  const x = 0.8 * width,
-    y = 0.8 * height,
+  const message = "중지"; // button message
+  const x = 0.2 * width,
+    y = 0.2 * height,
     w = 0.3 * width,
     h = 0.1 * height;
 
@@ -70,9 +70,61 @@ function stopMusicButton() {
   text(message, x, y, w, h);
 }
 
+/* subtitle: displays the subtitle while bgm is playing */
+function subtitle(bgmStartedAt, ms) {
+  const startTimes = [0, 33, 57, 91, 129, 166];
+  const endTimes = [3, 37, 63, 98, 135, 171];
+  const questions = [
+    "1. 우선 자기소개를 해주세요.",
+    "2. 향후 어떤 진로로 진출하고자 하나요?",
+    "3. 해당 진로에서 귀하의 강점과 약점은 무엇입니까?",
+    "4. 희망하는 진로에서 성공하기 위해 도움이 될 기술이나 경험은 어떤 것이 있나요?",
+    "5. 희망 연봉 수준은 어느정도입니까?",
+    "6. 커리어에서 최종적인 목표가 무엇입니까?",
+  ];
+  const x = 0.5 * width,
+    y = 0.9 * height;
+
+  textAlign(CENTER, CENTER);
+  textSize(32);
+  fill(255);
+
+  for (let i = 0; i < questions.length; i++) {
+    if (
+      ms - bgmStartedAt >= startTimes[i] * 1000 &&
+      ms - bgmStartedAt <= endTimes[i] * 1000
+    ) {
+      text(questions[i], x, y);
+    } else if (ms - bgmStartedAt >= endTimes[endTimes.length - 1] * 1000) {
+      text("수고하셨습니다.", x, y);
+    }
+  }
+}
+
+/* timer: displays how much time is left */
+function timer(bgmStartedAt, ms) {
+  const startTimes = [3, 37, 63, 98, 135, 171];
+  const endTimes = [33, 57, 91, 129, 166, 201];
+  const x = 0.5 * width,
+    y = 0.9 * height;
+
+  textAlign(CENTER, CENTER);
+  textSize(32);
+  fill(255);
+
+  for (let i = 0; i < startTimes.length; i++) {
+    if (
+      ms - bgmStartedAt >= startTimes[i] * 1000 &&
+      ms - bgmStartedAt <= endTimes[i] * 1000
+    ) {
+      text(`${parseInt(endTimes[i] - (ms - bgmStartedAt) / 1000)}`, x, y);
+    }
+  }
+}
+
 /* endingCredit: displays ending credit */
 function endingCredit() {
-  const message = "끝"; // message to display
+  const message = "엔딩 크레딧"; // message to display
 
   background(0);
   // text box
