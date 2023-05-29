@@ -6,13 +6,19 @@
 /* showVideo: displays a video captured by camera */
 function showVideo(video, predictions) {
   imageMode(CENTER);
-  ellipseMode(CENTER);
   push(); // mirror mode
   translate(width, 0);
   scale(-1, 1);
 
   // display captured video
-  image(video, width / 2, height / 2, width, height);
+  image(
+    video,
+    width / 2,
+    height / 2,
+    width,
+    // (video.height * width) / video.width,
+    height,
+  );
 
   // draw facemesh
   for (let i = 0; i < predictions.length; i++) {
@@ -95,7 +101,10 @@ function subtitle(bgmStartedAt, ms) {
       ms - bgmStartedAt <= endTimes[i] * 1000
     ) {
       text(questions[i], x, y);
-    } else if (ms - bgmStartedAt >= endTimes[endTimes.length - 1] * 1000) {
+    } else if (
+      ms - bgmStartedAt >=
+      endTimes[endTimes.length - 1] * 1000 + 33000
+    ) {
       text("수고하셨습니다.", x, y);
     }
   }
@@ -119,6 +128,26 @@ function timer(bgmStartedAt, ms) {
     ) {
       text(`${parseInt(endTimes[i] - (ms - bgmStartedAt) / 1000)}`, x, y);
     }
+  }
+}
+
+/* distortionNotice: displays a notice before distorting bgm */
+function distortionNotice(bgmStartedAt, ms, distortionStartsAt) {
+  const x = 0.5 * width,
+    y = 0.1 * height;
+
+  textAlign(CENTER, CENTER);
+  textSize(32);
+  fill(255);
+  if (
+    ms - bgmStartedAt >= distortionStartsAt - 5000 &&
+    ms - bgmStartedAt <= distortionStartsAt
+  ) {
+    text(
+      "지금부터 당신은 자폐 스펙트럼 환자들이\n 소음이나 방해 요인으로 둘러싸였을 때 빠지는 혼란과 감각 과부하를 체험하게 됩니다.",
+      x,
+      y,
+    );
   }
 }
 

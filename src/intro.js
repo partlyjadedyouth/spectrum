@@ -7,5 +7,11 @@
 function introVideo(intro) {
   intro.loop();
   imageMode(CENTER);
-  image(intro, width / 2, height / 2, width, height);
+  image(
+    intro,
+    width / 2,
+    height / 2,
+    width,
+    (intro.height * width) / intro.width,
+  );
 }
