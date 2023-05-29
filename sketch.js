@@ -6,6 +6,7 @@
 let ms; // millisecond timer
 let bgmStartedAt; // time when the start button is pressed
 const introRunningTime = 3000; // running time of intro video
+const distortionStartsAt = 91000; // Time when distortion is started
 
 let intro; // intro video
 let video; // captured video
@@ -70,17 +71,17 @@ function draw() {
         if (
           isButtonClicked(0.2 * width, 0.2 * height, 0.3 * width, 0.1 * height)
         ) {
-          // 5. When stop button is pressed
+          // 6. When stop button is pressed
           // toggle isStopButtonPressed
           isStopButtonPressed = true;
         }
       } else if (isStopButtonPressed) {
-        // 6. Stop button is pressed -> stop music
+        // 7. Stop button is pressed -> stop music
         bgm.stop();
       }
 
       if (!bgm.isPlaying()) {
-        // 7. Show ending credit
+        // 8. Show ending credit
         endingCredit();
       }
     }
