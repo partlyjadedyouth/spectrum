@@ -5,7 +5,7 @@
 /* Constants and Global Variables */
 let ms; // millisecond timer
 let bgmStartedAt; // time when the start button is pressed
-const introRunningTime = 44000; // running time of intro video 44000
+const introRunningTime = 1000; // running time of intro video 44000
 const distortionStartsAt = 85000; // Time when distortion is started 85000
 
 let intro; // intro video
@@ -32,6 +32,10 @@ function setup() {
   // intro video
   intro = createVideo("assets/intro.mp4");
   intro.hide();
+
+  // outro video
+  outro = createVideo("assets/outro.mp4");
+  outro.hide();
 
   // set distortions
   distorted = new p5.Distortion();
@@ -127,7 +131,8 @@ function draw() {
         noise.disconnect();
 
         // 9. Show ending credit
-        endingCredit();
+        background(0);
+        outroVideo(outro);
       }
     }
   }

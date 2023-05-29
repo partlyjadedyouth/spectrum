@@ -152,14 +152,14 @@ function distortionNotice(bgmStartedAt, ms, distortionStartsAt) {
 }
 
 /* endingCredit: displays ending credit */
-function endingCredit() {
-  const message = "엔딩 크레딧"; // message to display
-
-  background(0);
-  // text box
-  rectMode(CENTER);
-  textAlign(CENTER, CENTER);
-  textSize(32);
-  fill(255);
-  text(message, width / 2, height / 2, 0.8 * width, 0.5 * height);
+function outroVideo(outro) {
+  outro.loop();
+  imageMode(CENTER);
+  image(
+    outro,
+    width / 2,
+    height / 2,
+    width,
+    (outro.height * width) / outro.width,
+  );
 }
