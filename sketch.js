@@ -64,7 +64,7 @@ function setup() {
 /* draw */
 function draw() {
   ms = millis(); // timer
-
+  console.log(ms);
   if (ms < introRunningTime) {
     // 1. Play intro vid
     background(0);
@@ -179,7 +179,7 @@ function mousePressed() {
     bgm.play();
     bgm.stop(); // stop right after play
     isStartButtonPressed = true;
-  } else if (!isPlayButtonPressed) {
+  } else if (!isPlayButtonPressed && ms > introRunningTime) {
     if (isButtonClicked(916.5, 475 + 37 / 2, 65, 37)) {
       // when play button is pressed
       bgm.play(); // play music
