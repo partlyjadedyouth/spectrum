@@ -64,14 +64,12 @@ function setup() {
 /* draw */
 function draw() {
   ms = millis(); // timer
-  console.log(ms);
   if (ms < introRunningTime) {
     // 1. Play intro vid
     background(0);
     introVideo(intro);
   } else if (!isStartButtonPressed) {
     // 2. If intro vid is finished, pause the video
-    console.log("Intro vid finished");
     intro.pause();
   } else {
     background(0);
@@ -127,7 +125,6 @@ function draw() {
         ) {
           isSubtitleOn = !isSubtitleOn;
         }
-        console.log(isSubtitleOn);
 
         if (isButtonClicked(75 + 65 / 2, 475 + 37 / 2, 65, 37)) {
           // 7. When stop button is pressed
