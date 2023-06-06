@@ -5,13 +5,15 @@
 /* Constants and Global Variables */
 let ms; // millisecond timer
 let bgmStartedAt; // time when the start button is pressed
-const introRunningTime = 44000; // running time of intro video 44000
+const introRunningTime = 1000; // running time of intro video 40000
 const distortionStartsAt = 85000; // Time when distortion is started 85000
 
 let intro; // intro video
 let video; // captured video
-let facemesh; // facemesh
-let predictions = []; // facemesh predictions
+let pg; // to crop video
+let frame, ccButton, exitButton; // buttons and frame of the video
+let vidX, vidY, vidW, vidH; // center coordinates, width and height of the video
+
 let bgm; // background music (narration)
 let distorted, delayed, reverbed, noise; // distorted and delayed bgm
 
@@ -19,15 +21,26 @@ let isStartButtonPressed = false; // indicates if the start button is pressed or
 let isPlayButtonPressed = false; // indicates if the play button is pressed or not
 let isStopButtonPressed = false; // indicates if the stop button is pressed or not
 let isDistortionStarted = false; // indicates if the distortion is started or not
+let isSubtitleOn = true; // subtitle will be shown when this is true
 
 /* preload */
 function preload() {
   bgm = loadSound("sounds/narration.mp3");
+  frame = loadImage("assets/frame.png");
+  ccButton = loadImage("assets/cc.png");
+  exitButton = loadImage("assets/exit.png");
 }
 
 /* setup */
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(1024, 576);
+
+  // size of the video
+  vidX = width / 2;
+  vidY = height / 2.5;
+  vidW = 512;
+  vidH = 288;
+  pg = createGraphics(vidW, vidH);
 
   // intro video
   intro = createVideo("assets/intro.mp4");
@@ -43,14 +56,8 @@ function setup() {
   reverbed = new p5.Reverb();
   noise = new p5.Noise();
 
-  // capture video and facemesh from camera
+  // capture video from camera
   video = createCapture(VIDEO);
-  facemesh = ml5.facemesh(video, () => {
-    console.log("Model ready!");
-  });
-  facemesh.on("predict", (results) => {
-    predictions = results;
-  });
   video.hide();
 }
 
@@ -68,17 +75,15 @@ function draw() {
     intro.pause();
   } else {
     background(0);
-    // 3. Show webcam, facemesh, and play button
-    showVideo(video, predictions);
+    // 3. Show webcam and play button
+    showVideo(video, frame, isDistortionStarted);
     if (!isPlayButtonPressed) {
       playMusicButton();
     } else {
       if (!isStopButtonPressed && bgm.isPlaying()) {
-        // 4. If music is started, show stop button
-        stopMusicButton();
-
-        // 5. Show subtitles
-        subtitle(bgmStartedAt, ms);
+        // 4. Show subtitles
+        subtitle(bgmStartedAt, ms, isSubtitleOn);
+        // 5. Show timer
         timer(bgmStartedAt, ms);
 
         // 6. Distort bgm
@@ -86,8 +91,11 @@ function draw() {
 
         if (
           ms - bgmStartedAt >= distortionStartsAt &&
-          ms - bgmStartedAt <= distortionStartsAt + 15
+          ms - bgmStartedAt <= distortionStartsAt + 25
         ) {
+          isDistortionStarted = true;
+          isSubtitleOn = false;
+
           // distortion
           bgm.disconnect();
           distorted.process(bgm, 0.01);
@@ -112,9 +120,16 @@ function draw() {
           noise.amp(0.1);
         }
 
+        // if cc button is clicked, toggle subtitle
         if (
-          isButtonClicked(0.2 * width, 0.2 * height, 0.3 * width, 0.1 * height)
+          isButtonClicked(916.5, 475 + 37 / 2, 65, 37) &&
+          isDistortionStarted
         ) {
+          isSubtitleOn = !isSubtitleOn;
+        }
+        console.log(isSubtitleOn);
+
+        if (isButtonClicked(75 + 65 / 2, 475 + 37 / 2, 65, 37)) {
           // 7. When stop button is pressed
           // toggle isStopButtonPressed
           isStopButtonPressed = true;
@@ -165,7 +180,7 @@ function mousePressed() {
     bgm.stop(); // stop right after play
     isStartButtonPressed = true;
   } else if (!isPlayButtonPressed) {
-    if (isButtonClicked(0.8 * width, 0.2 * height, 0.3 * width, 0.1 * height)) {
+    if (isButtonClicked(916.5, 475 + 37 / 2, 65, 37)) {
       // when play button is pressed
       bgm.play(); // play music
       isPlayButtonPressed = true;
