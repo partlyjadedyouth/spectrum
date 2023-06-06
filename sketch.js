@@ -5,7 +5,7 @@
 /* Constants and Global Variables */
 let ms; // millisecond timer
 let bgmStartedAt; // time when the start button is pressed
-const introRunningTime = 1000; // running time of intro video 40000
+const introRunningTime = 40000; // running time of intro video 40000
 const distortionStartsAt = 85000; // Time when distortion is started 85000
 
 let intro; // intro video
