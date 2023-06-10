@@ -64,10 +64,10 @@ function playMusicButton() {
   text(message, x, y, w, h);
 }
 
-/* subtitle: displays the subtitle while bgm is playing */
-function subtitle(bgmStartedAt, ms, isSubtitleOn) {
-  const startTimes = [0, 33, 57, 91, 129, 166];
-  const endTimes = [3, 37, 63, 98, 135, 171];
+/* subtitle: displays the subtitle while questionnaire is playing */
+function subtitle(questionnaireStartedAt, ms, isSubtitleOn) {
+  const startTimes = [5, 25, 46, 68, 91, 112];
+  const endTimes = [8, 29, 51, 74, 95, 116];
   const questions = [
     "- 우선 자기소개를 해주세요.",
     "- 향후 어떤 진로로 진출하고자 하나요?",
@@ -80,19 +80,18 @@ function subtitle(bgmStartedAt, ms, isSubtitleOn) {
     y = 0.75 * height;
 
   textAlign(CENTER, CENTER);
-  textFont("Gulim");
   textSize(25);
   fill(255);
 
   for (let i = 0; i < questions.length; i++) {
     if (
-      ms - bgmStartedAt >= startTimes[i] * 1000 &&
-      ms - bgmStartedAt <= endTimes[i] * 1000 &&
+      ms - questionnaireStartedAt >= startTimes[i] * 1000 &&
+      ms - questionnaireStartedAt <= endTimes[i] * 1000 &&
       isSubtitleOn
     ) {
       text(questions[i], x, y);
     } else if (
-      ms - bgmStartedAt >=
+      ms - questionnaireStartedAt >=
       endTimes[endTimes.length - 1] * 1000 + 33000
     ) {
       text("수고하셨습니다.", x, y);
@@ -101,9 +100,9 @@ function subtitle(bgmStartedAt, ms, isSubtitleOn) {
 }
 
 /* timer: displays how much time is left */
-function timer(bgmStartedAt, ms) {
-  const startTimes = [3, 37, 63, 98, 135, 171];
-  const endTimes = [33, 57, 91, 129, 166, 201];
+function timer(questionnaireStartedAt, ms) {
+  const startTimes = [9, 30, 52, 75, 96, 117];
+  const endTimes = [24, 45, 67, 90, 111, 133];
   const x = 0.88 * width,
     y = 0.2 * height;
 
@@ -113,22 +112,26 @@ function timer(bgmStartedAt, ms) {
 
   for (let i = 0; i < startTimes.length; i++) {
     if (
-      ms - bgmStartedAt >= startTimes[i] * 1000 &&
-      ms - bgmStartedAt <= endTimes[i] * 1000
+      ms - questionnaireStartedAt >= startTimes[i] * 1000 &&
+      ms - questionnaireStartedAt <= endTimes[i] * 1000
     ) {
-      text(`${parseInt(endTimes[i] - (ms - bgmStartedAt) / 1000)}`, x, y);
+      text(
+        `${parseInt(endTimes[i] - (ms - questionnaireStartedAt) / 1000)}`,
+        x,
+        y,
+      );
     }
   }
 }
 
-/* distortionNotice: displays a notice before distorting bgm */
-function distortionNotice(bgmStartedAt, ms, distortionStartsAt) {
+/* distortionNotice: displays a notice before distorting questionnaire */
+function distortionNotice(questionnaireStartedAt, ms, distortionStartsAt) {
   const x = 0.5 * width,
     y = 0.5 * height;
 
   if (
-    ms - bgmStartedAt >= distortionStartsAt - 5000 &&
-    ms - bgmStartedAt <= distortionStartsAt
+    ms - questionnaireStartedAt >= distortionStartsAt - 5000 &&
+    ms - questionnaireStartedAt <= distortionStartsAt
   ) {
     rectMode(CENTER);
     fill(0, 0, 0, 200);
