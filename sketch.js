@@ -8,8 +8,8 @@ let ms; // millisecond timer
 let gameStartedAt; // time when the play button is pressed
 let questionnaireStartedAt; // time when the start button is pressed
 let outroStartedAt; // time when the outro is started to play
-const introRunningTime = 37500; // running time of intro video 37500
-const distortionStartsAt = 67000; // time when distortion is started 67000
+const introRunningTime = 2000; // running time of intro video 37500
+const distortionStartsAt = 5000; // time when distortion is started 67000
 const outroRunningTime = 20000; // running time of outro video 20000
 
 /* Image and video */
@@ -56,7 +56,7 @@ function setup() {
   vidY = height / 2.5;
   vidW = 512;
   vidH = 288;
-  pg = createGraphics(vidW, vidH);
+  pg = createGraphics(512, 288);
 
   // intro video
   intro = createVideo("assets/intro_trimmed.mp4");
@@ -159,16 +159,19 @@ function draw() {
           isSubtitleOn = !isSubtitleOn;
         }
 
-        if (
-          isButtonClicked(75 + 65 / 2, 475 + 37 / 2, 65, 37) ||
-          !questionnaire.isPlaying()
-        ) {
+        if (isButtonClicked(75 + 65 / 2, 475 + 37 / 2, 65, 37)) {
           /* 
-            Stop button is pressed or questionnaire is finished -> toggle isStopButtonPressed
+            Stop button is pressed -> toggle isStopButtonPressed
           */
           isStopButtonPressed = true;
           outroStartedAt = ms;
         }
+      } else if (!questionnaire.isPlaying()) {
+        /* 
+          Questionnaire is finished -> toggle isStopButtonPressed
+        */
+        isStopButtonPressed = true;
+        outroStartedAt = ms;
       }
     }
   } else {

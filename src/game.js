@@ -21,13 +21,13 @@ function showVideo(video, frame, isDistortionStarted) {
   // start distortion on video
   if (isDistortionStarted) {
     rectMode(CENTER);
-    if (vidW > 1.5 * 512) {
+    if (vidW > 1.2 * 512) {
       vidW *= random(0.85, 0.9);
     } else {
       vidW /= random(0.85, 0.9);
     }
 
-    if (vidH > 1.5 * 288) {
+    if (vidH > 1.2 * 288) {
       vidH *= random(0.85, 0.9);
     } else {
       vidH /= random(0.85, 0.9);
