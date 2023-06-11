@@ -92,9 +92,11 @@ function subtitle(questionnaireStartedAt, ms, isSubtitleOn) {
       text(questions[i], x, y);
     } else if (
       ms - questionnaireStartedAt >=
-      endTimes[endTimes.length - 1] * 1000 + 33000
+      endTimes[endTimes.length - 1] * 1000 + 15000
     ) {
       text("수고하셨습니다.", x, y);
+    } else if (!isSubtitleOn) {
+      text("CC OFF", x, y);
     }
   }
 }

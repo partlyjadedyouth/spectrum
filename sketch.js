@@ -8,8 +8,8 @@ let ms; // millisecond timer
 let gameStartedAt; // time when the play button is pressed
 let questionnaireStartedAt; // time when the start button is pressed
 let outroStartedAt; // time when the outro is started to play
-const introRunningTime = 2000; // running time of intro video 37500
-const distortionStartsAt = 5000; // time when distortion is started 67000
+const introRunningTime = 37500; // running time of intro video 37500
+const distortionStartsAt = 67000; // time when distortion is started 67000
 const outroRunningTime = 20000; // running time of outro video 20000
 
 /* Image and video */
@@ -41,6 +41,7 @@ function preload() {
   introSynth = loadSound("sounds/intro_synth.mp3");
   outroSynth = loadSound("sounds/outro_synth.mp3");
 
+  // button
   startButton = loadImage("assets/play.png");
   frame = loadImage("assets/frame.png");
   ccButton = loadImage("assets/cc.png");
