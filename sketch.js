@@ -17,7 +17,7 @@ let startButton; // play button
 let intro; // intro video
 let video; // captured video
 let pg; // to crop video
-let frame, ccButton, exitButton; // buttons and frame of the video
+let frame, ccOnButton; // buttons and frame of the video
 let vidX, vidY, vidW, vidH; // center coordinates, width and height of the video
 
 /* Music */
@@ -44,8 +44,7 @@ function preload() {
   // button
   startButton = loadImage("assets/play.png");
   frame = loadImage("assets/frame.png");
-  ccButton = loadImage("assets/cc.png");
-  exitButton = loadImage("assets/exit.png");
+  ccOnButton = loadImage("assets/cc_on.png");
 }
 
 /* setup */
@@ -152,14 +151,6 @@ function draw() {
           noise.amp(0.1);
         }
 
-        // if cc button is clicked, toggle subtitle only when the distortion has started
-        if (
-          isButtonClicked(916.5, 475 + 37 / 2, 65, 37) &&
-          isDistortionStarted
-        ) {
-          isSubtitleOn = !isSubtitleOn;
-        }
-
         if (isButtonClicked(75 + 65 / 2, 475 + 37 / 2, 65, 37)) {
           /* 
             Stop button is pressed -> toggle isStopButtonPressed
@@ -221,7 +212,7 @@ function isButtonClicked(x, y, w, h) {
   }
 }
 
-/* mousePressed: handles mouse press events on startButton and playMusicButton */
+/* mousePressed: handles mouse press events on buttons */
 function mousePressed() {
   if (!isStartButtonPressed) {
     // when start button is pressed
@@ -235,5 +226,11 @@ function mousePressed() {
       isPlayButtonPressed = true;
       questionnaireStartedAt = ms;
     }
+  } else if (
+    isDistortionStarted &&
+    isButtonClicked(916.5, 477 + 37 / 2, 65, 37)
+  ) {
+    // if cc button is clicked, toggle subtitle only when the distortion has started
+    isSubtitleOn = !isSubtitleOn;
   }
 }

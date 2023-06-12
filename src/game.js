@@ -79,11 +79,19 @@ function subtitle(questionnaireStartedAt, ms, isSubtitleOn) {
   const x = 0.5 * width,
     y = 0.75 * height;
 
+  if (isSubtitleOn) {
+    // button
+    imageMode(CENTER);
+    image(ccOnButton, 923, 477 + 37 / 2);
+  }
+
+  // subtitle text properties
   textAlign(CENTER, CENTER);
-  textSize(25);
+  textSize(20);
   fill(255);
 
   for (let i = 0; i < questions.length; i++) {
+    // display subtitles
     if (
       ms - questionnaireStartedAt >= startTimes[i] * 1000 &&
       ms - questionnaireStartedAt <= endTimes[i] * 1000 &&
@@ -95,8 +103,6 @@ function subtitle(questionnaireStartedAt, ms, isSubtitleOn) {
       endTimes[endTimes.length - 1] * 1000 + 15000
     ) {
       text("수고하셨습니다.", x, y);
-    } else if (!isSubtitleOn) {
-      text("CC OFF", x, y);
     }
   }
 }
