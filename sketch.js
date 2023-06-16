@@ -8,9 +8,9 @@ let ms; // millisecond timer
 let gameStartedAt; // time when the play button is pressed
 let questionnaireStartedAt; // time when the start button is pressed
 let outroStartedAt; // time when the outro is started to play
-const introRunningTime = 37500; // running time of intro video 37500
-const distortionStartsAt = 67000; // time when distortion is started 67000
-const outroRunningTime = 20000; // running time of outro video 20000
+const introRunningTime = 2000; // running time of intro video 73000
+const distortionStartsAt = 5000; // time when distortion is started 67000
+const outroRunningTime = 21000; // running time of outro video 21000
 
 /* Image and video */
 let startButton; // play button
@@ -19,6 +19,8 @@ let video; // captured video
 let pg; // to crop video
 let frame, ccOnButton; // buttons and frame of the video
 let vidX, vidY, vidW, vidH; // center coordinates, width and height of the video
+const stopButtonCoords = [100, 600, 80, 45]; // center coordinates, width and height of stop button
+const ccButtonCoords = [1115, 595, 56.25, 47]; // center coordinates, width and height of cc button
 
 /* Music */
 let introSynth; // background music on intro
@@ -49,17 +51,17 @@ function preload() {
 
 /* setup */
 function setup() {
-  createCanvas(1024, 576);
+  createCanvas(1200, 675);
 
   // size of the video
   vidX = width / 2;
-  vidY = height / 2.5;
-  vidW = 512;
-  vidH = 288;
-  pg = createGraphics(512, 288);
+  vidY = height / 2;
+  vidW = 800;
+  vidH = 450;
+  pg = createGraphics(800, 450);
 
   // intro video
-  intro = createVideo("assets/intro_trimmed.mp4");
+  intro = createVideo("assets/intro.mp4");
   intro.hide();
 
   // outro video
@@ -107,7 +109,8 @@ function draw() {
     background(0);
     showVideo(video, frame, isDistortionStarted);
     if (!isPlayButtonPressed) {
-      playMusicButton();
+      imageMode(CENTER);
+      image(startButton, width / 2, height / 2);
     } else {
       /* 
         Play button is pressed -> remove play button and play questionnaire
@@ -151,7 +154,14 @@ function draw() {
           noise.amp(0.1);
         }
 
-        if (isButtonClicked(75 + 65 / 2, 475 + 37 / 2, 65, 37)) {
+        if (
+          isButtonClicked(
+            stopButtonCoords[0],
+            stopButtonCoords[1],
+            stopButtonCoords[2],
+            stopButtonCoords[3],
+          )
+        ) {
           /* 
             Stop button is pressed -> toggle isStopButtonPressed
           */
@@ -220,7 +230,7 @@ function mousePressed() {
     gameStartedAt = ms;
     introSynth.play();
   } else if (!isPlayButtonPressed && ms - gameStartedAt > introRunningTime) {
-    if (isButtonClicked(916.5, 475 + 37 / 2, 65, 37)) {
+    if (isButtonClicked(width / 2, height / 2, 380, 140)) {
       // when play button is pressed
       questionnaire.play(); // play music
       isPlayButtonPressed = true;
@@ -228,7 +238,12 @@ function mousePressed() {
     }
   } else if (
     isDistortionStarted &&
-    isButtonClicked(916.5, 477 + 37 / 2, 65, 37)
+    isButtonClicked(
+      ccButtonCoords[0],
+      ccButtonCoords[1],
+      ccButtonCoords[2],
+      ccButtonCoords[3],
+    )
   ) {
     // if cc button is clicked, toggle subtitle only when the distortion has started
     isSubtitleOn = !isSubtitleOn;

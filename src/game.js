@@ -6,7 +6,7 @@
 /* showVideo: displays a video captured by camera */
 function showVideo(video, frame, isDistortionStarted) {
   imageMode(CENTER);
-  image(frame, width / 2, height / 2, 960, 540); // frame
+  image(frame, width / 2, height / 2, 1200, 675); // frame
 
   push(); // mirror mode
   translate(width, 0);
@@ -15,53 +15,37 @@ function showVideo(video, frame, isDistortionStarted) {
   // display captured video
   pg.imageMode(CENTER);
   pg.background(0);
-  pg.image(video, pg.width / 2, pg.height / 2, vidW, vidH);
+  pg.image(
+    video,
+    pg.width / 2,
+    pg.height / 2,
+    vidW,
+    (video.height * vidW) / vidH,
+  );
   image(pg, vidX, vidY);
 
   // start distortion on video
   if (isDistortionStarted) {
     rectMode(CENTER);
-    if (vidW > 1.2 * 512) {
+    if (vidW > 1.2 * 800) {
       vidW *= random(0.85, 0.9);
     } else {
       vidW /= random(0.85, 0.9);
     }
 
-    if (vidH > 1.2 * 288) {
+    if (vidH > 1.2 * 450) {
       vidH *= random(0.85, 0.9);
     } else {
       vidH /= random(0.85, 0.9);
     }
 
-    if (random(10) < 1.5) {
-      fill(255);
-      rect(vidX, vidY, 512, 288);
+    if (random(10) < 2) {
+      fill(255, random(200, 255), random(200, 255));
+      rect(vidX, vidY, 800, 450);
     }
   }
 
   pop();
-}
-
-/* playMusicButton: displays a button to start music */
-function playMusicButton() {
-  const message = "PLAY"; // button message
-  const x = 916.5,
-    y = 477 + 37 / 2,
-    w = 65,
-    h = 37;
-
-  // button
-  rectMode(CENTER);
-  stroke(255);
-  fill(0);
-  rect(x, y, w, h);
-
-  // button text
-  textAlign(CENTER, CENTER);
-  textSize(20);
-  textStyle(NORMAL);
-  fill(255);
-  text(message, x, y, w, h);
 }
 
 /* subtitle: displays the subtitle while questionnaire is playing */
@@ -82,7 +66,13 @@ function subtitle(questionnaireStartedAt, ms, isSubtitleOn) {
   if (isSubtitleOn) {
     // button
     imageMode(CENTER);
-    image(ccOnButton, 923, 477 + 37 / 2);
+    image(
+      ccOnButton,
+      ccButtonCoords[0],
+      ccButtonCoords[1],
+      ccButtonCoords[2],
+      ccButtonCoords[3],
+    );
   }
 
   // subtitle text properties
@@ -111,11 +101,11 @@ function subtitle(questionnaireStartedAt, ms, isSubtitleOn) {
 function timer(questionnaireStartedAt, ms) {
   const startTimes = [9, 30, 52, 75, 96, 117];
   const endTimes = [24, 45, 67, 90, 111, 133];
-  const x = 0.88 * width,
+  const x = 0.91 * width,
     y = 0.2 * height;
 
   textAlign(CENTER, CENTER);
-  textSize(25);
+  textSize(40);
   fill(255);
 
   for (let i = 0; i < startTimes.length; i++) {
