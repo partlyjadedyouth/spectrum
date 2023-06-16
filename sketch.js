@@ -8,24 +8,29 @@ let ms; // millisecond timer
 let gameStartedAt; // time when the play button is pressed
 let questionnaireStartedAt; // time when the start button is pressed
 let outroStartedAt; // time when the outro is started to play
-const introRunningTime = 2000; // running time of intro video 73000
-const distortionStartsAt = 5000; // time when distortion is started 67000
+const introRunningTime = 500; // running time of intro video 73000
+const distortionStartsAt = [38000, 40000, 52000]; // time when distortion is started [38000, 40000, 52000]
 const outroRunningTime = 21000; // running time of outro video 21000
 
 /* Image and video */
 let startButton; // play button
 let intro; // intro video
 let video; // captured video
-let pg; // to crop video
+let dialogueVideos = []; // dialogue stock videos
+let dialogue = -1; // kind of dialogue selected
+let camFrame; // to crop video
+let dialogueFrame; // to crop dialogue video
+let trigger;
 let frame, ccOnButton; // buttons and frame of the video
-let vidX, vidY, vidW, vidH; // center coordinates, width and height of the video
+let vidX, vidY, vidW, vidH, diaX; // center coordinates, width and height of the videos
 const stopButtonCoords = [100, 600, 80, 45]; // center coordinates, width and height of stop button
 const ccButtonCoords = [1115, 595, 56.25, 47]; // center coordinates, width and height of cc button
 
 /* Music */
 let introSynth; // background music on intro
+let triggerSynth; // trigger sound
 let outroSynth; // background music on outro
-let questionnaire; // questionnaire narration
+let questionnaires = []; // questionnaire narrations
 let distorted, delayed, reverbed, noise; // distorted and delayed questionnaire
 
 /* Boolean */
@@ -39,8 +44,11 @@ let isSubtitleOn = true; // subtitle will be shown when this is true
 /* preload */
 function preload() {
   // music
-  questionnaire = loadSound("sounds/questionnaire.mp3");
+  questionnaires.push(loadSound("sounds/cafe_synth_with_trigger.mp3"));
+  questionnaires.push(loadSound("sounds/friend_synth_with_trigger.mp3"));
+  questionnaires.push(loadSound("sounds/boy_synth_with_trigger.mp3"));
   introSynth = loadSound("sounds/intro_synth.mp3");
+  triggerSynth = loadSound("sounds/trigger.mp3");
   outroSynth = loadSound("sounds/outro_synth.mp3");
 
   // button
@@ -54,11 +62,12 @@ function setup() {
   createCanvas(1200, 675);
 
   // size of the video
-  vidX = width / 2;
+  vidX = width / 2 - 200;
   vidY = height / 2;
-  vidW = 800;
+  vidW = 400;
   vidH = 450;
-  pg = createGraphics(800, 450);
+  diaX = width / 2 + 200;
+  camFrame = createGraphics(400, 450);
 
   // intro video
   intro = createVideo("assets/intro.mp4");
@@ -67,6 +76,19 @@ function setup() {
   // outro video
   outro = createVideo("assets/outro.mp4");
   outro.hide();
+
+  // dialogue videos
+  dialogueVideos.push(createVideo("assets/cafe.mp4"));
+  dialogueVideos.push(createVideo("assets/friend.mp4"));
+  dialogueVideos.push(createVideo("assets/boy.mp4"));
+  for (let i = 0; i < dialogueVideos.length; i++) {
+    dialogueVideos[i].hide();
+  }
+  dialogueFrame = createGraphics(400, 450);
+
+  // trigger video
+  trigger = createVideo("assets/trigger.mp4");
+  trigger.hide();
 
   // set distortions
   distorted = new p5.Distortion();
@@ -104,35 +126,41 @@ function draw() {
     isIntroPlaying = false;
   } else if (!isStopButtonPressed) {
     /* 
-      Intro is paused -> show webcam with a frame and play button
+      Intro is paused -> show webcam with a frame and
+      make user to choose between 3 dialogues
     */
     background(0);
-    showVideo(video, frame, isDistortionStarted);
+    showVideo(dialogue, video, frame, isDistortionStarted);
     if (!isPlayButtonPressed) {
-      imageMode(CENTER);
-      image(startButton, width / 2, height / 2);
+      /* Let user to choose between dialogues */
+      chooseDialogue();
     } else {
       /* 
-        Play button is pressed -> remove play button and play questionnaire
+        Dialogue is chosen -> play dialogue video and questionnaire
       */
-      if (!isStopButtonPressed && questionnaire.isPlaying()) {
+      if (!isStopButtonPressed && questionnaires[dialogue].isPlaying()) {
         // show subtitles
-        subtitle(questionnaireStartedAt, ms, isSubtitleOn);
+        subtitle(dialogue, questionnaireStartedAt, ms, isSubtitleOn);
         // with a timer
-        timer(questionnaireStartedAt, ms);
+        timer(dialogue, questionnaireStartedAt, ms);
         // show a distortion notice before distorting sound
-        distortionNotice(questionnaireStartedAt, ms, distortionStartsAt);
+        distortionNotice(
+          trigger,
+          questionnaireStartedAt,
+          ms,
+          distortionStartsAt[dialogue],
+        );
         // distort questionnaire
         if (
-          ms - questionnaireStartedAt >= distortionStartsAt &&
-          ms - questionnaireStartedAt <= distortionStartsAt + 25
+          ms - questionnaireStartedAt >= distortionStartsAt[dialogue] &&
+          ms - questionnaireStartedAt <= distortionStartsAt[dialogue] + 25
         ) {
           isDistortionStarted = true;
           isSubtitleOn = false;
 
           // distortion
-          questionnaire.disconnect();
-          distorted.process(questionnaire, 0.01);
+          questionnaires[dialogue].disconnect();
+          distorted.process(questionnaires[dialogue], 0.01);
           distorted.amp(1.0);
           distorted.set(0.5);
 
@@ -168,7 +196,7 @@ function draw() {
           isStopButtonPressed = true;
           outroStartedAt = ms;
         }
-      } else if (!questionnaire.isPlaying()) {
+      } else if (!questionnaires[dialogue].isPlaying()) {
         /* 
           Questionnaire is finished -> toggle isStopButtonPressed
         */
@@ -180,8 +208,8 @@ function draw() {
     /* 
       isStopButtonPressed is true -> stop video, questionnaire, and distortions
     */
-    if (questionnaire.isPlaying()) {
-      questionnaire.stop();
+    if (questionnaires[dialogue].isPlaying()) {
+      questionnaires[dialogue].stop();
     } else {
       reverbed.disconnect();
       noise.disconnect();
@@ -229,14 +257,8 @@ function mousePressed() {
     isStartButtonPressed = true;
     gameStartedAt = ms;
     introSynth.play();
-  } else if (!isPlayButtonPressed && ms - gameStartedAt > introRunningTime) {
-    if (isButtonClicked(width / 2, height / 2, 380, 140)) {
-      // when play button is pressed
-      questionnaire.play(); // play music
-      isPlayButtonPressed = true;
-      questionnaireStartedAt = ms;
-    }
   } else if (
+    isPlayButtonPressed &&
     isDistortionStarted &&
     isButtonClicked(
       ccButtonCoords[0],
@@ -247,5 +269,27 @@ function mousePressed() {
   ) {
     // if cc button is clicked, toggle subtitle only when the distortion has started
     isSubtitleOn = !isSubtitleOn;
+  }
+}
+
+/* keyTyped: handles user choosing between dialogues */
+function keyTyped() {
+  if (isStartButtonPressed && !isIntroPlaying && !isPlayButtonPressed) {
+    if (key === "1") {
+      dialogue = 0;
+      questionnaires[dialogue].play(); // play music
+      isPlayButtonPressed = true;
+      questionnaireStartedAt = ms;
+    } else if (key === "2") {
+      dialogue = 1;
+      questionnaires[dialogue].play(); // play music
+      isPlayButtonPressed = true;
+      questionnaireStartedAt = ms;
+    } else if (key === "3") {
+      dialogue = 2;
+      questionnaires[dialogue].play(); // play music
+      isPlayButtonPressed = true;
+      questionnaireStartedAt = ms;
+    }
   }
 }

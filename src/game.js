@@ -4,7 +4,7 @@
  */
 
 /* showVideo: displays a video captured by camera */
-function showVideo(video, frame, isDistortionStarted) {
+function showVideo(dialogue, video, frame, isDistortionStarted) {
   imageMode(CENTER);
   image(frame, width / 2, height / 2, 1200, 675); // frame
 
@@ -13,53 +13,113 @@ function showVideo(video, frame, isDistortionStarted) {
   scale(-1, 1);
 
   // display captured video
-  pg.imageMode(CENTER);
-  pg.background(0);
-  pg.image(
+  camFrame.imageMode(CENTER);
+  camFrame.background(0);
+  camFrame.image(
     video,
-    pg.width / 2,
-    pg.height / 2,
-    vidW,
-    (video.height * vidW) / vidH,
+    camFrame.width / 2,
+    camFrame.height / 2,
+    vidW * 1.2,
+    (video.height * vidW * 1.2) / vidH,
   );
-  image(pg, vidX, vidY);
+  image(camFrame, vidX, vidY);
+
+  // display dialogue video
+  if (dialogue != -1) {
+    let dialogueVideo = dialogueVideos[dialogue];
+    dialogueVideo.loop();
+    dialogueFrame.imageMode(CENTER);
+    dialogueFrame.background(255);
+    dialogueFrame.image(
+      dialogueVideo,
+      dialogueFrame.width / 2,
+      dialogueFrame.height / 2,
+      vidW * 1.2,
+      (dialogueVideo.height * vidW * 1.2) / vidH,
+    );
+    image(dialogueFrame, diaX, vidY);
+  }
 
   // start distortion on video
   if (isDistortionStarted) {
     rectMode(CENTER);
-    if (vidW > 1.2 * 800) {
-      vidW *= random(0.85, 0.9);
+    if (vidW > 1.1 * 400) {
+      vidW *= random(0.9, 0.95);
     } else {
-      vidW /= random(0.85, 0.9);
+      vidW /= random(0.9, 0.95);
     }
 
-    if (vidH > 1.2 * 450) {
-      vidH *= random(0.85, 0.9);
+    if (vidH > 1.1 * 450) {
+      vidH *= random(0.9, 0.95);
     } else {
-      vidH /= random(0.85, 0.9);
+      vidH /= random(0.9, 0.95);
     }
 
     if (random(10) < 2) {
       fill(255, random(200, 255), random(200, 255));
-      rect(vidX, vidY, 800, 450);
+      rect(vidX, vidY, 400, 450);
+      rect(diaX, vidY, 400, 450);
     }
   }
 
   pop();
 }
 
+/* chooseDialogue: choose between 3 dialogues */
+function chooseDialogue() {
+  rectMode(CENTER);
+  fill(0);
+  rect(width / 2, height / 2, width, height);
+  fill(255);
+  textAlign(CENTER, CENTER);
+  textSize(40);
+  text(
+    "키보드의 숫자 키를 눌러주세요.\n1. 카페 주문\n2.오랜만에 만난 친구\n3.길 물어보는 아이",
+    width / 2,
+    height / 2,
+  );
+}
+
 /* subtitle: displays the subtitle while questionnaire is playing */
-function subtitle(questionnaireStartedAt, ms, isSubtitleOn) {
-  const startTimes = [5, 25, 46, 68, 91, 112];
-  const endTimes = [8, 29, 51, 74, 95, 116];
-  const questions = [
-    "- 우선 자기소개를 해주세요.",
-    "- 향후 어떤 진로로 진출하고자 하나요?",
-    "- 해당 진로에서 귀하의 강점과 약점은 무엇입니까?",
-    "- 희망하는 진로에서 성공하기 위해 도움이 될 기술이나 경험은 어떤 것이 있나요?",
-    "- 희망 연봉 수준은 어느정도입니까?",
-    "- 커리어에서 최종적인 목표가 무엇입니까?",
-  ];
+function subtitle(dialogue, questionnaireStartedAt, ms, isSubtitleOn) {
+  let startTimes, endTimes, questions;
+  if (dialogue === 0) {
+    // cafe
+    startTimes = [3, 9, 14.83, 38, 45.83, 51.83];
+    endTimes = [5, 10.83, 16.83, 41.83, 47.83, 57];
+    questions = [
+      "- 어떤 음료 주문하시겠어요?",
+      "- 드시고 가세요?",
+      "- 결제 어떻게 하시나요?",
+      "- 전화번호 뒷자리 알려주시면 적립해드리겠습니다.",
+      "- 영수증 어떻게 해드릴까요?",
+      "- 음료가 준비되면 닉네임을 불러드리겠습니다. 닉네임이 어떻게 되실까요?",
+    ];
+  } else if (dialogue === 1) {
+    // friend
+    startTimes = [3, 9.83, 16, 40, 46, 51.83];
+    endTimes = [5.83, 12, 18, 42, 47.83, 53];
+    questions = [
+      "- 반갑다 친구야! 우리 얼마만이지?",
+      "- 우리가 몇 학년 때 같은 반이었지?",
+      "- 요즘은 무슨 일 해?",
+      "- 한 번 만나자 언제 시간 돼?",
+      "- 만나서 뭐 할까?",
+      "- 어디서 볼래?",
+    ];
+  } else if (dialogue === 2) {
+    startTimes = [3, 12, 26, 52, 60, 66];
+    endTimes = [8, 22, 30, 56, 62, 67];
+    questions = [
+      "- 안녕하세요! 혹시 서울대 학생이신가요?",
+      "- 제가 오늘 여기 견학왔거든요! 여기가 학생회관인 것 같은데, IBK 커뮤니케이션 센터까지 어떻게 가는지 아시나요?",
+      "- 혹시 거기까지 걸어서 얼마나 걸리나요?",
+      "- 그 건물 학생증 없어도 들어가 볼 수 있어여?",
+      "- 거기선 뭐 배워여?",
+      "- 재밌어여?",
+    ];
+  }
+
   const x = 0.5 * width,
     y = 0.75 * height;
 
@@ -98,9 +158,19 @@ function subtitle(questionnaireStartedAt, ms, isSubtitleOn) {
 }
 
 /* timer: displays how much time is left */
-function timer(questionnaireStartedAt, ms) {
-  const startTimes = [9, 30, 52, 75, 96, 117];
-  const endTimes = [24, 45, 67, 90, 111, 133];
+function timer(dialogue, questionnaireStartedAt, ms) {
+  let startTimes, endTimes;
+  if (dialogue === 0) {
+    startTimes = [5, 10.83, 16.83, 41.83, 47.83, 57];
+    endTimes = [9, 14.83, 20.83, 45.83, 51.83, 61];
+  } else if (dialogue === 1) {
+    startTimes = [5.83, 12, 18, 42, 47.83, 53];
+    endTimes = [9.83, 16, 22, 46, 51.83, 60];
+  } else if (dialogue === 2) {
+    startTimes = [8, 22, 30, 56, 62, 67];
+    endTimes = [12, 26, 34, 60, 66];
+  }
+
   const x = 0.91 * width,
     y = 0.2 * height;
 
@@ -123,25 +193,19 @@ function timer(questionnaireStartedAt, ms) {
 }
 
 /* distortionNotice: displays a notice before distorting questionnaire */
-function distortionNotice(questionnaireStartedAt, ms, distortionStartsAt) {
-  const x = 0.5 * width,
-    y = 0.5 * height;
-
+function distortionNotice(
+  trigger,
+  questionnaireStartedAt,
+  ms,
+  distortionStartsAt,
+) {
   if (
-    ms - questionnaireStartedAt >= distortionStartsAt - 5000 &&
+    ms - questionnaireStartedAt >= distortionStartsAt - 17000 &&
     ms - questionnaireStartedAt <= distortionStartsAt
   ) {
-    rectMode(CENTER);
-    fill(0, 0, 0, 200);
-    rect(width / 2, height / 2, width, height);
-    textAlign(CENTER, CENTER);
-    textSize(32);
-    fill(255);
-    text(
-      "지금부터 당신은 자폐 스펙트럼 환자들이\n소음이나 방해 요인으로 둘러싸였을 때 빠지는\n혼란과 감각 과부하를 체험하게 됩니다.",
-      x,
-      y,
-    );
+    trigger.loop();
+    imageMode(CENTER);
+    image(trigger, width / 2, height / 2, width, height);
   }
 }
 
