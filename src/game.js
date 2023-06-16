@@ -19,8 +19,10 @@ function showVideo(dialogue, video, frame, isDistortionStarted) {
     video,
     camFrame.width / 2,
     camFrame.height / 2,
-    vidW * 1.2,
-    (video.height * vidW * 1.2) / vidH,
+    (video.width * vidW * 1.1) / video.height,
+    vidH * 1.1,
+    // vidW * 1.1,
+    // (video.height * vidW * 1.1) / vidH,
   );
   image(camFrame, vidX, vidY);
 
@@ -34,8 +36,10 @@ function showVideo(dialogue, video, frame, isDistortionStarted) {
       dialogueVideo,
       dialogueFrame.width / 2,
       dialogueFrame.height / 2,
-      vidW * 1.2,
-      (dialogueVideo.height * vidW * 1.2) / vidH,
+      (dialogueVideo.width * vidW * 1.1) / dialogueVideo.height,
+      vidH * 1.1,
+      // vidW * 1.1,
+      // (dialogueVideo.height * vidW * 1.1) / vidH,
     );
     image(dialogueFrame, diaX, vidY);
   }
@@ -84,7 +88,7 @@ function subtitle(dialogue, questionnaireStartedAt, ms, isSubtitleOn) {
       "- 결제 어떻게 하시나요?",
       "- 전화번호 뒷자리 알려주시면 적립해드리겠습니다.",
       "- 영수증 어떻게 해드릴까요?",
-      "- 음료가 준비되면 닉네임을 불러드리겠습니다. 닉네임이 어떻게 되실까요?",
+      "- 음료가 준비되면 닉네임을 불러드리겠습니다.\n닉네임이 어떻게 되실까요?",
     ];
   } else if (dialogue === 1) {
     // friend
@@ -99,15 +103,16 @@ function subtitle(dialogue, questionnaireStartedAt, ms, isSubtitleOn) {
       "- 어디서 볼래?",
     ];
   } else if (dialogue === 2) {
+    // boy
     startTimes = [3, 12, 26, 52, 60, 66];
     endTimes = [8, 22, 30, 56, 62, 67];
     questions = [
       "- 안녕하세요! 혹시 서울대 학생이신가요?",
-      "- 제가 오늘 여기 견학왔거든요! 여기가 학생회관인 것 같은데, IBK 커뮤니케이션 센터까지 어떻게 가는지 아시나요?",
+      "- 제가 오늘 여기 견학왔거든요! 여기가 학생회관인 것 같은데,\nIBK 커뮤니케이션 센터까지 어떻게 가는지 아시나요?",
       "- 혹시 거기까지 걸어서 얼마나 걸리나요?",
-      "- 그 건물 학생증 없어도 들어가 볼 수 있어여?",
-      "- 거기선 뭐 배워여?",
-      "- 재밌어여?",
+      "- 그 건물 학생증 없어도 들어가 볼 수 있어요?",
+      "- 거기선 뭐 배워요?",
+      "- 재밌어요?",
     ];
   }
 

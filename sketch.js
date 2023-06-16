@@ -8,7 +8,7 @@ let ms; // millisecond timer
 let gameStartedAt; // time when the play button is pressed
 let questionnaireStartedAt; // time when the start button is pressed
 let outroStartedAt; // time when the outro is started to play
-const introRunningTime = 500; // running time of intro video 73000
+const introRunningTime = 73000; // running time of intro video 73000
 const distortionStartsAt = [38000, 40000, 52000]; // time when distortion is started [38000, 40000, 52000]
 const outroRunningTime = 21000; // running time of outro video 21000
 
