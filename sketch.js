@@ -12,19 +12,22 @@ const introRunningTime = 500; // running time of intro video 73000
 const distortionStartsAt = [38000, 40000, 52000]; // time when distortion is started [38000, 40000, 52000]
 const outroRunningTime = 21000; // running time of outro video 21000
 
-/* Image and video */
+/* Image */
 let startButton; // play button
+let dialogueImage; // an image to use in chooseDialogue function
+let frame, ccOnButton; // buttons and frame of the video
+const stopButtonCoords = [100, 600, 80, 45]; // center coordinates, width and height of stop button
+const ccButtonCoords = [1115, 595, 56.25, 47]; // center coordinates, width and height of cc button
+
+/* Video */
 let intro; // intro video
 let video; // captured video
 let dialogueVideos = []; // dialogue stock videos
 let dialogue = -1; // kind of dialogue selected
 let camFrame; // to crop video
 let dialogueFrame; // to crop dialogue video
-let trigger;
-let frame, ccOnButton; // buttons and frame of the video
+let trigger; // trigger video
 let vidX, vidY, vidW, vidH, diaX; // center coordinates, width and height of the videos
-const stopButtonCoords = [100, 600, 80, 45]; // center coordinates, width and height of stop button
-const ccButtonCoords = [1115, 595, 56.25, 47]; // center coordinates, width and height of cc button
 
 /* Music */
 let introSynth; // background music on intro
@@ -55,6 +58,7 @@ function preload() {
   startButton = loadImage("assets/play.png");
   frame = loadImage("assets/frame.png");
   ccOnButton = loadImage("assets/cc_on.png");
+  dialogueImage = loadImage("assets/dialogue_image.png");
 }
 
 /* setup */
@@ -133,7 +137,7 @@ function draw() {
     showVideo(dialogue, video, frame, isDistortionStarted);
     if (!isPlayButtonPressed) {
       /* Let user to choose between dialogues */
-      chooseDialogue();
+      chooseDialogue(dialogueImage);
     } else {
       /* 
         Dialogue is chosen -> play dialogue video and questionnaire

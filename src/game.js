@@ -66,18 +66,9 @@ function showVideo(dialogue, video, frame, isDistortionStarted) {
 }
 
 /* chooseDialogue: choose between 3 dialogues */
-function chooseDialogue() {
-  rectMode(CENTER);
-  fill(0);
-  rect(width / 2, height / 2, width, height);
-  fill(255);
-  textAlign(CENTER, CENTER);
-  textSize(40);
-  text(
-    "키보드의 숫자 키를 눌러주세요.\n1. 카페 주문\n2.오랜만에 만난 친구\n3.길 물어보는 아이",
-    width / 2,
-    height / 2,
-  );
+function chooseDialogue(dialogueImage) {
+  imageMode(CENTER);
+  image(dialogueImage, width / 2, height / 2, width, height);
 }
 
 /* subtitle: displays the subtitle while questionnaire is playing */
@@ -121,7 +112,7 @@ function subtitle(dialogue, questionnaireStartedAt, ms, isSubtitleOn) {
   }
 
   const x = 0.5 * width,
-    y = 0.75 * height;
+    y = 0.9 * height;
 
   if (isSubtitleOn) {
     // button
@@ -137,7 +128,7 @@ function subtitle(dialogue, questionnaireStartedAt, ms, isSubtitleOn) {
 
   // subtitle text properties
   textAlign(CENTER, CENTER);
-  textSize(20);
+  textSize(30);
   fill(255);
 
   for (let i = 0; i < questions.length; i++) {
