@@ -28,18 +28,18 @@ function showVideo(dialogue, video, frame, isDistortionStarted) {
 
   // display dialogue video
   if (dialogue != -1) {
-    let dialogueVideo = dialogueVideos[dialogue];
-    dialogueVideo.loop();
+    dialogueVideos[dialogue].loop();
     dialogueFrame.imageMode(CENTER);
-    dialogueFrame.background(255);
+    dialogueFrame.background(0);
     dialogueFrame.image(
-      dialogueVideo,
+      dialogueVideos[dialogue],
       dialogueFrame.width / 2,
       dialogueFrame.height / 2,
-      (dialogueVideo.width * vidW * 1.1) / dialogueVideo.height,
+      (dialogueVideos[dialogue].width * vidW * 1.1) /
+        dialogueVideos[dialogue].height,
       vidH * 1.1,
       // vidW * 1.1,
-      // (dialogueVideo.height * vidW * 1.1) / vidH,
+      // (dialogueVideos[dialogue].height * vidW * 1.1) / vidH,
     );
     image(dialogueFrame, diaX, vidY);
   }

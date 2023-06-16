@@ -165,12 +165,12 @@ function draw() {
           // distortion
           questionnaires[dialogue].disconnect();
           distorted.process(questionnaires[dialogue], 0.01);
-          distorted.amp(1.0);
-          distorted.set(0.5);
+          distorted.amp(random(0.8, 1.0));
+          distorted.set(random(0.4, 0.5));
 
           // delay
           distorted.disconnect();
-          delayed.process(distorted, 0.8, 0.85, 10000);
+          delayed.process(distorted, random(0.5, 0.8), 0.85, 10000);
 
           // reverb
           delayed.disconnect();
