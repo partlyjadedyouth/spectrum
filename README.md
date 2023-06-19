@@ -48,4 +48,4 @@
 
 [![logo](assets/logo.png)](https://partlyjadedyouth.github.io/spectrum)
 
-위 로고를 클릭하면 프로그램을 시연할 수 있는 웹사이트로 이동됩니다.
+_위 로고를 클릭하면 프로그램을 시연할 수 있는 웹사이트로 이동됩니다._
